@@ -1,0 +1,187 @@
+
+// Questão 05 - Cadastro, fatorial, matriz e media ponderada
+
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <limits.h>
+
+struct Participante {
+    char nome[50];
+    unsigned long long id;
+    int idade;
+    int *valores;
+    double media;
+};
+
+unsigned long long fatorial(int n) {
+    unsigned long long fat = 1;
+    int i;
+
+    for (i = 1; i <= n; i++) {
+        if (fat > ULLONG_MAX / i) {
+            return ULLONG_MAX;
+        }
+
+        fat *= i;
+    }
+
+    return fat;
+}
+
+unsigned long long potencia(unsigned long long base, int expoente) {
+    unsigned long long resultado = 1;
+    int i;
+
+    for (i = 0; i < expoente; i++) {
+        if (base != 0 && resultado > ULLONG_MAX / base) {
+            return ULLONG_MAX;
+        }
+
+        resultado *= base;
+    }
+
+    return resultado;
+}
+
+int main() {
+    struct Participante p[4];
+    int quantidade;
+    int i, j, k;
+    int lados[2];
+    int contLados = 0;
+    int temp;
+    unsigned long long novoID;
+    int tentativa;
+
+    printf("Quantidade de valores por participante: ");
+    scanf("%d", &quantidade);
+
+    if (quantidade <= 0) {
+        printf("Quantidade invalida.\n");
+        return 0;
+    }
+
+    for (i = 0; i < 4; i++) {
+        printf("\nNome do participante: ");
+        scanf(" %49[^\n]", p[i].nome);
+
+        printf("Idade: ");
+        scanf("%d", &p[i].idade);
+
+        while (p[i].idade < 0) {
+            printf("Digite uma idade valida: ");
+            scanf("%d", &p[i].idade);
+        }
+
+        p[i].id = fatorial(p[i].idade) / 2;
+
+        tentativa = 0;
+
+        for (j = 0; j < i; j++) {
+            if (p[i].id == p[j].id) {
+                novoID = potencia(fatorial(p[i].idade / 2),
+                                  quantidade + tentativa);
+
+                while (1) {
+                    int repetido = 0;
+
+                    for (k = 0; k < i; k++) {
+                        if (novoID == p[k].id) {
+                            repetido = 1;
+                            break;
+                        }
+                    }
+
+                    if (repetido == 0) {
+                        break;
+                    }
+
+                    if (novoID < ULLONG_MAX) {
+                        novoID++;
+                    } else {
+                        novoID = 0;
+                    }
+
+                    tentativa++;
+                }
+
+                p[i].id = novoID;
+            }
+        }
+
+        p[i].valores = malloc(quantidade * sizeof(int));
+    }
+
+    for (i = 0; i < 4; i++) {
+        printf("\nValores de %s:\n", p[i].nome);
+
+        for (j = 0; j < quantidade; j++) {
+            printf("Digite um valor: ");
+            scanf("%d", &p[i].valores[j]);
+
+            if (p[i].valores[j] >= 0 && contLados < 2) {
+                lados[contLados] = p[i].valores[j];
+                contLados++;
+            }
+        }
+    }
+
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3 - i; j++) {
+            if (strcmp(p[j].nome, p[j + 1].nome) > 0) {
+                struct Participante tempP = p[j];
+                p[j] = p[j + 1];
+                p[j + 1] = tempP;
+            }
+        }
+    }
+
+    for (i = 0; i < 4; i++) {
+        double soma = 0;
+        int peso = 1;
+
+        for (j = 0; j < quantidade; j++) {
+            soma += p[i].valores[j] * peso;
+            peso++;
+        }
+
+        p[i].media = soma / (quantidade * (quantidade + 1) / 2);
+    }
+
+    printf("\nParticipantes em ordem alfabetica:\n");
+
+    for (i = 0; i < 4; i++) {
+        printf("\nNome: %s\n", p[i].nome);
+        printf("ID: %llu\n", p[i].id);
+        printf("Media ponderada: %.2f\n", p[i].media);
+    }
+
+    if (contLados == 2) {
+        double diagonal;
+
+        diagonal = sqrt(lados[0] * lados[0] + lados[1] * lados[1]);
+
+        printf("\nDiagonal do retangulo: %.2f\n", diagonal);
+
+        for (i = 0; i < 4; i++) {
+            printf("%s: ", p[i].nome);
+
+            if (p[i].media > diagonal) {
+                printf("Acima da diagonal\n");
+            } else if (p[i].media < diagonal) {
+                printf("Abaixo da diagonal\n");
+            } else {
+                printf("Sobre a diagonal\n");
+            }
+        }
+    } else {
+        printf("\nNao foi possivel calcular a diagonal.\n");
+    }
+
+    for (i = 0; i < 4; i++) {
+        free(p[i].valores);
+    }
+
+    return 0;
+}
