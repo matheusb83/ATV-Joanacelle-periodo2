@@ -1,0 +1,80 @@
+
+// Questão 03 - Ocorrencias, numeros primos e cadastro de animais
+
+#include <stdio.h>
+
+int main() {
+    int numeros[15];
+    int usados[15] = {0};
+    char animais[15][50];
+    int i, j, cont, soma;
+    int primo;
+
+    for (i = 0; i < 15; i++) {
+        printf("Digite um numero: ");
+        scanf("%d", &numeros[i]);
+    }
+
+    for (i = 0; i < 15; i++) {
+        printf("Digite o nome do animal da posicao %d: ", i + 1);
+        scanf(" %49[^\n]", animais[i]);
+    }
+
+    printf("\nResultado:\n");
+
+    for (i = 0; i < 15; i++) {
+        if (usados[i] == 0) {
+            cont = 0;
+
+            for (j = 0; j < 15; j++) {
+                if (numeros[i] == numeros[j]) {
+                    cont++;
+                    usados[j] = 1;
+                }
+            }
+
+            printf("\nNumero %d aparece %d vezes\n", numeros[i], cont);
+
+            primo = 1;
+
+            if (numeros[i] < 2) {
+                primo = 0;
+            }
+
+            for (j = 2; j < numeros[i]; j++) {
+                if (numeros[i] % j == 0) {
+                    primo = 0;
+                    break;
+                }
+            }
+
+            if (primo == 1 && cont % 2 != 0) {
+                soma = numeros[i] * cont;
+
+                printf("Numero primo com ocorrencia impar.\n");
+                printf("Cadastre %d animais:\n", soma);
+
+                for (j = 0; j < soma; j++) {
+                    char nome[50];
+
+                    printf("Animal %d: ", j + 1);
+                    scanf(" %49[^\n]", nome);
+
+                    printf("Animal cadastrado: %s\n", nome);
+                }
+            }
+
+            if (cont % 2 == 0) {
+                printf("Animais correspondentes:\n");
+
+                for (j = 0; j < 15; j++) {
+                    if (numeros[j] == numeros[i]) {
+                        printf("Posicao %d: %s\n", j + 1, animais[j]);
+                    }
+                }
+            }
+        }
+    }
+
+    return 0;
+}
