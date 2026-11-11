@@ -1,1 +1,103 @@
 
+// Questão 01 - Contagem de ocorrências e cadastro de produtos
+
+#include <stdio.h>
+#include <string.h>
+
+struct Produto {
+    char nome[50];
+    float preco;
+};
+
+int main() {
+    int numeros[12];
+    int usados[12] = {0};
+    int pares[12];
+    int quantidadePares = 0;
+    int i, j, k, cont;
+    int totalProdutos = 0;
+
+    struct Produto produtos[12];
+
+    for (i = 0; i < 12; i++) {
+        printf("Digite um numero: ");
+        scanf("%d", &numeros[i]);
+    }
+
+    printf("\nNumeros informados:\n");
+
+    for (i = 0; i < 12; i++) {
+        printf("%d ", numeros[i]);
+    }
+
+    printf("\n\nOcorrencias:\n");
+
+    for (i = 0; i < 12; i++) {
+        if (usados[i] == 0) {
+            cont = 0;
+
+            for (j = 0; j < 12; j++) {
+                if (numeros[i] == numeros[j]) {
+                    cont++;
+                    usados[j] = 1;
+                }
+            }
+
+            printf("Numero %d aparece %d vezes\n", numeros[i], cont);
+
+            if (cont % 2 == 0) {
+                pares[quantidadePares] = numeros[i];
+                quantidadePares++;
+            } else {
+                for (k = 0; k < cont; k++) {
+                    printf("\nProduto %d\n", k + 1);
+
+                    printf("Nome: ");
+                    scanf(" %49[^\n]", produtos[totalProdutos].nome);
+
+                    printf("Preco: ");
+                    scanf("%f", &produtos[totalProdutos].preco);
+
+                    totalProdutos++;
+                }
+            }
+        }
+    }
+
+    for (i = 0; i < quantidadePares - 1; i++) {
+        for (j = 0; j < quantidadePares - 1 - i; j++) {
+            if (pares[j] < pares[j + 1]) {
+                int temp = pares[j];
+                pares[j] = pares[j + 1];
+                pares[j + 1] = temp;
+            }
+        }
+    }
+
+    for (i = 0; i < totalProdutos - 1; i++) {
+        for (j = 0; j < totalProdutos - 1 - i; j++) {
+            if (strcmp(produtos[j].nome, produtos[j + 1].nome) > 0) {
+                struct Produto temp = produtos[j];
+                produtos[j] = produtos[j + 1];
+                produtos[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("\nProdutos cadastrados:\n");
+
+    for (i = 0; i < totalProdutos; i++) {
+        printf("%s - R$ %.2f\n", produtos[i].nome, produtos[i].preco);
+    }
+
+    printf("\nNumeros com ocorrencia par em ordem decrescente:\n");
+
+    for (i = 0; i < quantidadePares; i++) {
+        printf("%d ", pares[i]);
+    }
+
+    printf("\n");
+
+    return 0;
+}
+
