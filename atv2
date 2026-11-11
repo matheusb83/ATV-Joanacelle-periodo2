@@ -1,0 +1,62 @@
+
+// Questão 02 - Separacao de positivos pares e negativos impares
+
+#include <stdio.h>
+
+int main() {
+    int numeros[10];
+    int positivos[10], negativos[10];
+    int p = 0, n = 0;
+    int i, j, temp;
+
+    for (i = 0; i < 10; i++) {
+        printf("Digite um numero: ");
+        scanf("%d", &numeros[i]);
+
+        if (numeros[i] > 0 && numeros[i] % 2 == 0) {
+            positivos[p] = numeros[i];
+            p++;
+        }
+
+        if (numeros[i] < 0 && numeros[i] % 2 != 0) {
+            negativos[n] = numeros[i];
+            n++;
+        }
+    }
+
+    for (i = 0; i < p - 1; i++) {
+        for (j = 0; j < p - 1 - i; j++) {
+            if (positivos[j] > positivos[j + 1]) {
+                temp = positivos[j];
+                positivos[j] = positivos[j + 1];
+                positivos[j + 1] = temp;
+            }
+        }
+    }
+
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - 1 - i; j++) {
+            if (negativos[j] > negativos[j + 1]) {
+                temp = negativos[j];
+                negativos[j] = negativos[j + 1];
+                negativos[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("\nPositivos pares:\n");
+
+    for (i = 0; i < p; i++) {
+        printf("%d ", positivos[i]);
+    }
+
+    printf("\n\nNegativos impares:\n");
+
+    for (i = 0; i < n; i++) {
+        printf("%d ", negativos[i]);
+    }
+
+    printf("\n");
+
+    return 0;
+}
